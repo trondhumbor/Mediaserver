@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>MediaPlayer v0.1</title>
+
+		<style>
+		td, th {
+			border-style: solid;
+			border-width: 1px 1px 0px 0px;
+		}
+
+		table {
+			border-style: solid;
+			border-width: 0px 0px 1px 1px;
+		}
+
+		html {
+			background-color:#3B3838;
+			overflow-y: scroll; /*Removes the jump when the slidebar appeares*/
+		}
+
+		body{
+			/*background-color:#3B3838; /*A6A5A8*/
+			font: 0.875em/1.3 arial, sans-serif;
+			text-align: left; 
+			margin: 4em auto 0 auto;
+			width: 75%;/*480px*/
+			min-width: 62.5em;
+		}
+
+		#main{
+			background-color: #FFFFFF; /*#D4D4D4 #52474D-6D6D6E*/
+			/*width:100%;*/
+			/*margin:auto;*/
+			float:none;
+			clear:both;
+			list-style: none;
+			list-style-type: none;
+			/*-webkit-border-radius: 0 0 0.5em 0.5em;
+			-moz-border-radius: 0 0 0.5em 0.5em;
+			border-radius: 0 0 0.5em 0.5em;*/
+			overflow-y: auto;
+			overflow-x: hidden;
+			padding:1.5em;
+		}
+
+		#header{
+			background-color:#ebebeb;/*adadad*/
+			/*background: url("example-banner.png");*/
+			text-decoration: none;
+			width:auto;
+			padding-bottom:0.9375em;
+			overflow-y: visible;
+			overflow-x: visible;
+			height:120px;/*A bit hacky*/
+			list-style: none;
+			list-style-type: none;
+			/*-webkit-border-radius: 0.5em 0.5em 0 0;
+			-moz-border-radius: 0.5em 0.5em 0 0;
+			border-radius: 0.5em 0.5em 0 0;*/
+		}
+		#logo{
+			font: 1.65em/1.3 arial, sans-serif;
+			float:left;
+			clear:right;
+			width:auto;
+			margin-top:2.5em;
+			margin-left:3em;
+			margin-bottom:0.3125em;
+			text-decoration: none;
+		}
+		#logo img{
+			border-style: none;
+		}
+
+		</style>
+
+
+		<script language="javascript" type="application/javascript">
+			function getResource(resource, callback){
+				if (window.XMLHttpRequest)
+				{// code for IE7+, Firefox, Chrome, Opera, Safari
+					var xmlhttp = new XMLHttpRequest();
+				}
+				else
+				{// code for IE6, IE5
+					var xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+				}
+				xmlhttp.onreadystatechange = function()
+				{
+					if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+					{
+						callback(xmlhttp.responseText);
+					}
+				};
+				xmlhttp.open("GET", resource, true);
+				xmlhttp.send();
+			}
+
+			function playSong(trackId, elementId){
+				var track = document.getElementById(elementId).parentNode;
+
+				var audioElement = document.createElement("audio");
+				var sourceElement = document.createElement("source");
+				sourceElement.setAttribute("src", "http://192.168.0.100:8080/getTrackById/" + trackId);
+				sourceElement.setAttribute("type", "audio/mp4");
+				audioElement.setAttribute("controls", "");
+				audioElement.setAttribute("autoplay", "");
+				audioElement.appendChild(sourceElement);
+
+				track.innerHTML = "";
+				track.appendChild(audioElement);
+
+
+			}
+
+			function getAvailableTracks(response){
+				var jsonResult = JSON.parse(response);
+				
+				// get the reference for the body
+				var body = document.getElementById("main");
+ 
+				// creates a <table> element and a <tbody> element
+				var tbl = document.createElement("table");
+				var tblBody = document.createElement("tbody");
+
+				//Create table headers
+				var row = document.createElement("tr");
+				for (property in jsonResult[0]) {
+					var cell = document.createElement("th");
+					var cellText = document.createTextNode(property);
+					cell.appendChild(cellText);
+					row.appendChild(cell);
+				}
+				tblBody.appendChild(row);
+
+
+
+				// creating all cells
+				for (var i = 0; i < jsonResult.length; i++) {
+					// creates a table row
+					var row = document.createElement("tr");
+
+					for (property in jsonResult[i]) {
+						// Create a <td> element and a text node, make the text
+						// node the contents of the <td>, and put the <td> at
+						// the end of the table row
+						var cell = document.createElement("td");
+
+						if(property == "_id"){
+							var buttonElement = document.createElement("button");
+							buttonElement.setAttribute("id", jsonResult[i][property]);
+							buttonElement.setAttribute("onClick", "playSong(\"" + jsonResult[i][property]  + "\", \"" + jsonResult[i][property] + "\");");
+							buttonElement.appendChild(document.createTextNode("Play song"));
+							cell.appendChild(buttonElement);
+
+						} else {
+							var cellText = document.createTextNode(jsonResult[i][property]);
+							cell.appendChild(cellText);
+						}
+						row.appendChild(cell);
+					}
+
+					// add the row to the end of the table body
+					tblBody.appendChild(row);
+				}
+
+				// put the <tbody> in the <table>
+				tbl.appendChild(tblBody);
+				// appends <table> into <body>
+				body.appendChild(tbl);
+
+			}
+		window.onload = getResource('http://192.168.0.100:8080/getAvailableTracks', getAvailableTracks);
+		</script>
+	</head>
+	<body>
+		<div id="header">
+			<p id="logo">MediaClient v0.1</p>
+		</div>
+
+		<div id="main">
+		</div>
+
+	</body>
+</html>
+
