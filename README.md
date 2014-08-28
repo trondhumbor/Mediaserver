@@ -2,7 +2,10 @@ Mediaserver
 =============
 
 #### Introduction
-A mediaserver with a NodeJS + MongoDB backend and a HTML + JavaScript frontend.
+A mediaserver with a Node.js + MongoDB backend and a HTML + JavaScript frontend.
 
 #### Dependencies
-Read the importstatements in the code.
+The mediaserver relies on the following thirdparty packages
+
+* mongodb
+* musicmetadata
