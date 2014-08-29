@@ -116,10 +116,10 @@
                 var body = document.getElementById("main");
 
                 for(var i = 0; i < jsonResult.length; i++){
-                    var artists = jsonResult[i]["_id"][0];
-                    if(jsonResult[i]["_id"].length > 1){
-                        for(var j = 1; j < jsonResult[i]["_id"].length; j++){
-                            artists += (" & " + jsonResult[i]["_id"][j]);
+                    var artists = jsonResult[i]["artist"][0];
+                    if(jsonResult[i]["artist"].length > 1){
+                        for(var j = 1; j < jsonResult[i]["artist"].length; j++){
+                            artists += (" & " + jsonResult[i]["artist"][j]);
                         }
                     }
 

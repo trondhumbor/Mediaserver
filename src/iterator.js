@@ -33,10 +33,10 @@ function iterateMedia ( dir ) {
                         // Vi vil huske hvor vi fant musikk-filen
                         meta.filelocation = file;
 
-                        MongoClient.connect("mongodb://127.0.0.1:27017/mydb", function(err, db) {
+                        MongoClient.connect("mongodb://127.0.0.1:27017/musicdb", function(err, db) {
                             if(err) throw err;
                             
-                            var collection = db.collection("testData");
+                            var collection = db.collection("trackdata");
                             collection.insert(meta, function(err, docs) {
                                 db.close();
                             });

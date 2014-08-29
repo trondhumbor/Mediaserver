@@ -43,26 +43,14 @@ http.createServer(
 
 function getAvailableTracks( request, response ){
     
-    MongoClient.connect("mongodb://127.0.0.1:27017/mydb", function(err, db) {
+    MongoClient.connect("mongodb://127.0.0.1:27017/musicdb", function(err, db) {
         if(err) throw err;
 
-        var collection = db.collection("testData");
-        collection.aggregate(
-            [
-                {
-                    $group: {
-                        _id: {album: "$album", artist: "$artist"},
-                        tracks: { $addToSet: { id : "$_id", title: "$title" } }
-                    }
-                },
-                {
-                    $group: {
-                        _id: "$_id.artist",
-                        albums: { $addToSet: { title: "$_id.album", tracks: "$tracks" } }
-                    }
-                }
+        var collection = db.collection("artistdata");
 
-            ], function (err, docs) {
+        // Finn alle entry-ene i databasen. find() returnerer en cursor,
+        // vi vil ha et array. Vi gjør derfor toArray()
+        collection.find().toArray( function (err, docs) {
 
                 if (err) console.log(err);
 
@@ -70,18 +58,17 @@ function getAvailableTracks( request, response ){
                 response.end( JSON.stringify(docs) );
                 
                 db.close();
-            }
-        );
+        });
     });
 }
 
 
 function getTrackById( request, response, requestedTrackId ) {
     
-    MongoClient.connect("mongodb://127.0.0.1:27017/mydb", function(err, db) {
+    MongoClient.connect("mongodb://127.0.0.1:27017/musicdb", function(err, db) {
         if(err) throw err;
 
-        var collection = db.collection("testData");
+        var collection = db.collection("trackdata");
 
         //Finn dokument med _id lik ObjectID(requestedTrackId)
         //Projection: Fjern alt unntatt filelocation, fjern også _id fra resultat
