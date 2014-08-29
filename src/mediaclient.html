@@ -77,7 +77,6 @@
 
 
         <script language="javascript" type="application/javascript">
-            MEDIA_HOST = "http://127.0.0.1:8080";
 
             function getResource(resource, callback){
                 if (window.XMLHttpRequest)
@@ -102,7 +101,7 @@
             function playSong(trackId, elementId){
                 var track = document.getElementById("audioplayer");
                 track.pause();
-                track.setAttribute("src", MEDIA_HOST + "/tracks/" + trackId);
+                track.setAttribute("src", window.location.origin + "/tracks/" + trackId);
                 track.load();
                 //track.volume = 0.5; //Let's not blow out the ears of the enduser.
                 track.play();
@@ -164,13 +163,15 @@
 
                 }
             }
-        window.onload = getResource( MEDIA_HOST + "/tracks", getAvailableTracks);
+
+        console.log(window.location.origin);
+        window.onload = getResource( window.location.origin + "/tracks", getAvailableTracks);
         </script>
     </head>
     <body>
         <div id="header">
             <p id="logo">MediaClient v0.2</p>
-            <audio controls id="audioplayer" type="audio/mp4" src="" style="margin-left:70%;"></audio>
+            <audio controls id="audioplayer" type="audio/mp4" src="" style="margin-left:60%;"></audio>
         </div>
 
         <div id="main">
