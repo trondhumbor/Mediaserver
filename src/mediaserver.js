@@ -28,13 +28,11 @@ http.createServer(
             case "index.html":
             case "":
                 response.writeHead(200, { "Content-Type": "text/html" });
+                
+                // Obtain readstream and pipe to responsestream
+                var rstream = fs.createReadStream("mediaclient.html");
+                rstream.pipe(response);
 
-                fs.readFile("mediaclient.html",
-                    function (err, data) {
-                        if (err) console.log(err);
-                        response.end(data);
-                    }
-                );
                 break;
         }
 
@@ -86,12 +84,9 @@ function getTrackById( request, response, requestedTrackId ) {
                 //Les ut fila vi skal returnere, og skriv den til response.end().
                 //end() ender connection mellom client-server når fila er ferdigsendt
 
-                fs.readFile(docs[0].filelocation,
-                    function (err, data) {
-                        if (err) console.log(err);
-                        response.end(data);
-                    }
-                );
+                var rstream = fs.createReadStream( docs[0].filelocation );
+                rstream.pipe(response);
+
             });
 
             // Lukk db-forbindelsen
